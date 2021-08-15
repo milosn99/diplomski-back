@@ -76,29 +76,6 @@ router.put("/interests/add", auth, async (req, res) => {
   res.send(student);
 });
 
-router.put("/projects/add", auth, async (req, res) => {
-  let project = new Project(req.body.project);
-  project.owner = await Student.findById(req.user._id).select("_id name");
-  console.log(project.owner);
-  project.save();
-
-  const student = await Student.findByIdAndUpdate(
-    req.user._id,
-    {
-      $push: {
-        projects: _.pick(project, ["_id", "name", "technologies"]),
-      },
-    },
-    {
-      new: true,
-    }
-  ).select("name email projects -_id");
-
-  if (!student) return res.status(404).send("Student not found");
-
-  res.send(student);
-});
-
 router.put("/edit", auth, async (req, res) => {
   let update = req.body;
   delete update._id;

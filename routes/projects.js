@@ -12,6 +12,28 @@ router.get("/:id", auth, async (req, res) => {
   return res.status(200).send(project);
 });
 
+router.post("/add", auth, async (req, res) => {
+  let project = new Project(req.body.project);
+  project.owner = await Student.findById(req.user._id).select("_id name");
+  project.save();
+
+  const student = await Student.findByIdAndUpdate(
+    req.user._id,
+    {
+      $push: {
+        projects: _.pick(project, ["_id", "name", "technologies"]),
+      },
+    },
+    {
+      new: true,
+    }
+  ).select("name email projects -_id");
+
+  if (!student) return res.status(404).send("Student not found");
+
+  res.send(student);
+});
+
 router.put("/edit/:id", auth, async (req, res) => {
   if (!req.body) return res.status(400).send("No project provided");
   if (!req.body.owner || req.body.owner._id != req.user._id)
