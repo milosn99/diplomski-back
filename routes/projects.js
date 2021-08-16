@@ -29,6 +29,21 @@ router.post("/add", auth, async (req, res) => {
     }
   ).select("name email projects -_id");
 
+  for (contributor of req.body.project.contributors) {
+    const con = await Student.findByIdAndUpdate(
+      contributor._id,
+      {
+        $push: {
+          projects: _.pick(project, ["_id", "name", "technologies"]),
+        },
+      },
+      {
+        new: true,
+      }
+    ).select("name email projects -_id");
+    if (!con) return res.status(404).send("Contributor is not a student");
+  }
+
   if (!student) return res.status(404).send("Student not found");
 
   res.send(student);

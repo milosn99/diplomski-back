@@ -46,7 +46,7 @@ router.post("/add", auth, async (req, res) => {
 });
 
 router.get("/", auth, async (req, res) => {
-  const result = await Post.find().sort({ timeStamp: -1 });
+  const result = await Post.find().sort({ timeStamp: -1 }).limit(10);
   if (!result) return res.status(404).send("Posts not found");
 
   return res.status(200).send(result);

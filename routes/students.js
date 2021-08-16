@@ -29,7 +29,7 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/", auth, async (req, res) => {
-  const result = await Student.find();
+  const result = await Student.find({ _id: { $ne: req.user._id } });
   if (!result) return res.status(404).send("Students not found");
 
   return res.status(200).send(result);
