@@ -1010,3 +1010,5 @@
 {"level":"info","message":"Staring app on port 3001!","timestamp":"2021-08-15T15:46:01.178Z"}
 {"level":"info","message":"Staring app on port 3001!","timestamp":"2021-08-15T15:52:09.811Z"}
 {"level":"info","message":"Connected to mongodb+srv://milos:milos@diplomski.wwllh.mongodb.net/diplomski?retryWrites=true&w=majority","timestamp":"2021-08-15T15:52:10.367Z"}
+{"level":"info","message":"Staring app on port 3001!","timestamp":"2021-08-15T17:48:14.767Z"}
+{"level":"info","message":"Connected to mongodb+srv://milos:milos@diplomski.wwllh.mongodb.net/diplomski?retryWrites=true&w=majority","timestamp":"2021-08-15T17:48:15.338Z"}
