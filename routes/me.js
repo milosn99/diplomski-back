@@ -5,6 +5,7 @@ const express = require("express");
 const { Student } = require("../models/student");
 const { Professor } = require("../models/professor");
 const { Recruiter } = require("../models/recruiter");
+const { Post } = require("../models/post");
 const router = express.Router();
 
 router.get("/", auth, async (req, res) => {
@@ -25,4 +26,14 @@ router.get("/", auth, async (req, res) => {
     return res.status(200).send(recruiter);
   }
 });
+
+router.get("/posts", auth, async (req, res) => {
+  const result = await Post.find({ "owner._id": req.user._id })
+    .sort({ timeStamp: -1 })
+    .limit(10);
+  if (!result) return res.status(404).send("Posts not found");
+
+  return res.status(200).send(result);
+});
+
 module.exports = router;
