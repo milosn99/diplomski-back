@@ -5,6 +5,9 @@ const recruiters = require("../routes/recruiters");
 const posts = require("../routes/posts");
 const me = require("../routes/me");
 const projects = require("../routes/projects");
+const users = require("../routes/users");
+const messages = require("../routes/messages");
+const conversations = require("../routes/conversations");
 const cors = require("cors");
 const multer = require("multer");
 
@@ -19,4 +22,7 @@ module.exports = function (app) {
   app.use("/api/posts", posts);
   app.use("/api/me", me);
   app.use("/api/projects", projects);
+  app.use("/api/users", users);
+  app.use("/api/messages", messages);
+  app.use("/api/conversations", conversations);
 };

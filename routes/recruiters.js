@@ -8,22 +8,27 @@ const express = require("express");
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-  const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  try {
+    const { error } = validate(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
-  let professor = await Recruiter.findOne({
-    email: req.body.email,
-  });
-  if (!professor) return res.status(400).send("Invalid email or password.");
+    let professor = await Recruiter.findOne({
+      email: req.body.email,
+    });
+    if (!professor) return res.status(400).send("Invalid email or password.");
 
-  const validPassword = await bcrypt.compare(
-    req.body.password,
-    professor.password
-  );
-  if (!validPassword) return res.status(400).send("Invalid email or password.");
+    const validPassword = await bcrypt.compare(
+      req.body.password,
+      professor.password
+    );
+    if (!validPassword)
+      return res.status(400).send("Invalid email or password.");
 
-  const token = professor.generateAuthToken();
-  res.send(token);
+    const token = professor.generateAuthToken();
+    res.send(token);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
 });
 
 function validate(req) {

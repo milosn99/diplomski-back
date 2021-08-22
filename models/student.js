@@ -100,6 +100,10 @@ const studentSchema = new mongoose.Schema({
   },
   avatar: String,
   headline: String,
+  private: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 studentSchema.methods.generateAuthToken = function () {

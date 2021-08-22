@@ -12,5 +12,6 @@ require("./startup/validation")();
 const server = app.listen(port, () =>
   winston.info(`Staring app on port ${port}!`)
 );
+require("./startup/socket")(server);
 
 module.exports = server;

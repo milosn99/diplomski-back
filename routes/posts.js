@@ -11,45 +11,57 @@ router.put(
   "/photo/:id",
   [auth, upload.single("thumbnail")],
   async (req, res) => {
-    const student = await Student.findById(req.user._id).select("_id name");
-    if (!student) return res.status(404).send("Student not found");
+    try {
+      const student = await Student.findById(req.user._id).select("_id name");
+      if (!student) return res.status(404).send("Student not found");
 
-    const post = await Post.findByIdAndUpdate(
-      req.params.id,
-      {
-        $set: {
-          thumbnail: "public/images/" + req.file.filename,
+      const post = await Post.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: {
+            thumbnail: "public/images/" + req.file.filename,
+          },
         },
-      },
-      { new: true }
-    );
+        { new: true }
+      );
 
-    res.send(post);
+      res.send(post);
+    } catch (err) {
+      return res.status(500).send(err);
+    }
   }
 );
 
 router.post("/add", auth, async (req, res) => {
-  const student = await Student.findById(req.user._id).select(
-    "_id name avatar"
-  );
-  if (!student) return res.status(404).send("Student not found");
+  try {
+    const student = await Student.findById(req.user._id).select(
+      "_id name avatar"
+    );
+    if (!student) return res.status(404).send("Student not found");
 
-  let post = new Post({
-    owner: student,
-    content: req.body.content,
-    timeStamp: Date.now(),
-  });
+    let post = new Post({
+      owner: student,
+      content: req.body.content,
+      timeStamp: Date.now(),
+    });
 
-  post = await post.save();
+    post = await post.save();
 
-  res.send(post);
+    res.send(post);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
 });
 
 router.get("/", auth, async (req, res) => {
-  const result = await Post.find().sort({ timeStamp: -1 }).limit(10);
-  if (!result) return res.status(404).send("Posts not found");
+  try {
+    const result = await Post.find().sort({ timeStamp: -1 }).limit(10);
+    if (!result) return res.status(404).send("Posts not found");
 
-  return res.status(200).send(result);
+    return res.status(200).send(result);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
 });
 
 module.exports = router;

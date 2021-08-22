@@ -10,36 +10,41 @@ const { Project } = require("../models/project");
 const { Student } = require("../models/student");
 
 router.post("/", async (req, res) => {
-  const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  try {
+    const { error } = validate(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
-  let professor = await Professor.findOne({
-    email: req.body.email,
-  });
-  if (!professor) return res.status(400).send("Invalid email or password.");
+    let professor = await Professor.findOne({
+      email: req.body.email,
+    });
+    if (!professor) return res.status(400).send("Invalid email or password.");
 
-  const validPassword = await bcrypt.compare(
-    req.body.password,
-    professor.password
-  );
-  if (!validPassword) return res.status(400).send("Invalid email or password.");
+    const validPassword = await bcrypt.compare(
+      req.body.password,
+      professor.password
+    );
+    if (!validPassword)
+      return res.status(400).send("Invalid email or password.");
 
-  const token = professor.generateAuthToken();
-  res.send(token);
+    const token = professor.generateAuthToken();
+    res.send(token);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
 });
 
 router.put("/students", auth, async (req, res) => {
-  const professor = await Professor.findByIdAndUpdate(
-    req.user._id,
-    { $set: { students: req.body.students } },
-    {
-      new: true,
-    }
-  ).select("name email students");
+  try {
+    const professor = await Professor.findByIdAndUpdate(
+      req.user._id,
+      { $addToSet: { students: req.body.student } },
+      {
+        new: true,
+      }
+    ).select("name email students");
 
-  for (student of req.body.students) {
     await Student.findByIdAndUpdate(
-      student._id,
+      req.body.student._id,
       {
         $addToSet: {
           professors: _.pick(professor, ["_id", "name"]),
@@ -49,39 +54,45 @@ router.put("/students", auth, async (req, res) => {
         new: true,
       }
     );
+
+    if (!professor) return res.status(404).send("Professor not found");
+
+    res.send(professor);
+  } catch (err) {
+    return res.status(500).send(err);
   }
-
-  if (!professor) return res.status(404).send("Professor not found");
-
-  res.send(professor);
 });
 
 router.put("/projects", auth, async (req, res) => {
-  const professor = await Professor.findByIdAndUpdate(
-    req.user._id,
-    { $set: { projects: req.body.projects } },
-    {
-      new: true,
-    }
-  ).select("name email projects");
-
-  for (project of req.body.projects) {
-    await Project.findByIdAndUpdate(
-      project._id,
-      {
-        $addToSet: {
-          mentors: _.pick(professor, ["_id", "name"]),
-        },
-      },
+  try {
+    const professor = await Professor.findByIdAndUpdate(
+      req.user._id,
+      { $set: { projects: req.body.projects } },
       {
         new: true,
       }
-    );
+    ).select("name email projects");
+
+    for (project of req.body.projects) {
+      await Project.findByIdAndUpdate(
+        project._id,
+        {
+          $addToSet: {
+            mentors: _.pick(professor, ["_id", "name"]),
+          },
+        },
+        {
+          new: true,
+        }
+      );
+    }
+
+    if (!professor) return res.status(404).send("Professor not found");
+
+    res.send(professor);
+  } catch (err) {
+    return res.status(500).send(err);
   }
-
-  if (!professor) return res.status(404).send("Professor not found");
-
-  res.send(professor);
 });
 
 function validate(req) {
