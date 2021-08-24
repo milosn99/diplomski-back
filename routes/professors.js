@@ -67,7 +67,7 @@ router.put("/projects", auth, async (req, res) => {
   try {
     const professor = await Professor.findByIdAndUpdate(
       req.user._id,
-      { $set: { projects: req.body.projects } },
+      { $addToSet: { projects: req.body.project } },
       {
         new: true,
       }
