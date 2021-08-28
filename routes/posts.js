@@ -64,4 +64,17 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
+router.get("/:id", auth, async (req, res) => {
+  try {
+    const result = await Post.find({ "owner._id": req.params.id })
+      .sort({ timeStamp: -1 })
+      .limit(10);
+    if (!result) return res.status(404).send("Posts not found");
+
+    return res.status(200).send(result);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+});
+
 module.exports = router;

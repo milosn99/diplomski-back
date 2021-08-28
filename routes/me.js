@@ -103,4 +103,12 @@ router.get("/posts", auth, async (req, res) => {
   }
 });
 
+router.get("/avatar", auth, async (req, res) => {
+  try {
+    return res.status(200).send(`public/avatars/${req.user._id}.jpg`);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+});
+
 module.exports = router;
