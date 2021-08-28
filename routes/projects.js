@@ -65,7 +65,6 @@ router.put("/edit/:id", auth, async (req, res) => {
 
     let update = req.body;
     delete update._id;
-    update.name = "test3";
     const project = await Project.findOneAndUpdate(
       { _id: req.params.id },
       update,

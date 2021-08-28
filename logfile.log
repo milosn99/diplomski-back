@@ -1230,3 +1230,16 @@
 {"level":"info","message":"Staring app on port 3001!","timestamp":"2021-08-26T08:35:48.678Z"}
 {"level":"info","message":"Staring app on port 3001!","timestamp":"2021-08-26T08:40:51.734Z"}
 {"level":"info","message":"Connected to mongodb+srv://milos:milos@diplomski.wwllh.mongodb.net/diplomski?retryWrites=true&w=majority","timestamp":"2021-08-26T08:40:52.119Z"}
+{"level":"info","message":"Staring app on port 3001!","timestamp":"2021-08-26T10:29:50.094Z"}
+{"level":"info","message":"Connected to mongodb+srv://milos:milos@diplomski.wwllh.mongodb.net/diplomski?retryWrites=true&w=majority","timestamp":"2021-08-26T10:29:50.472Z"}
+{"level":"info","message":"Staring app on port 3001!","timestamp":"2021-08-27T08:54:16.901Z"}
+{"level":"info","message":"Staring app on port 3001!","timestamp":"2021-08-27T08:57:11.843Z"}
+{"level":"info","message":"Connected to mongodb+srv://milos:milos@diplomski.wwllh.mongodb.net/diplomski?retryWrites=true&w=majority","timestamp":"2021-08-27T08:57:12.259Z"}
+{"level":"info","message":"Staring app on port 3001!","timestamp":"2021-08-27T10:17:26.096Z"}
+{"level":"info","message":"Connected to mongodb+srv://milos:milos@diplomski.wwllh.mongodb.net/diplomski?retryWrites=true&w=majority","timestamp":"2021-08-27T10:17:26.473Z"}
+{"level":"info","message":"Staring app on port 3001!","timestamp":"2021-08-27T10:28:27.289Z"}
+{"level":"info","message":"Connected to mongodb+srv://milos:milos@diplomski.wwllh.mongodb.net/diplomski?retryWrites=true&w=majority","timestamp":"2021-08-27T10:28:27.686Z"}
+{"level":"info","message":"Staring app on port 3001!","timestamp":"2021-08-27T11:19:45.100Z"}
+{"level":"info","message":"Connected to mongodb+srv://milos:milos@diplomski.wwllh.mongodb.net/diplomski?retryWrites=true&w=majority","timestamp":"2021-08-27T11:19:45.553Z"}
+{"level":"info","message":"Staring app on port 3001!","timestamp":"2021-08-27T11:46:36.834Z"}
+{"level":"info","message":"Connected to mongodb+srv://milos:milos@diplomski.wwllh.mongodb.net/diplomski?retryWrites=true&w=majority","timestamp":"2021-08-27T11:46:37.252Z"}

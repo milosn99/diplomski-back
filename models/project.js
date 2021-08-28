@@ -35,6 +35,7 @@ const projectSchema = new mongoose.Schema({
         ref: "Professor",
       },
       name: String,
+      comment: String,
     }),
   ],
   description: {
