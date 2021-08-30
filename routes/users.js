@@ -33,6 +33,26 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
+router.get("/filter", auth, async (req, res) => {
+  try {
+    let students = await Student.find({
+      _id: { $ne: req.user._id },
+      name: { $regex: `^${req.query.name}`, $options: "i" },
+    }).select("_id name userType avatar");
+
+    let professors = await Professor.find({
+      _id: { $ne: req.user._id },
+      name: { $regex: `^${req.query.name}`, $options: "i" },
+    }).select("_id name userType avatar");
+
+    const result = students.concat(professors);
+
+    return res.status(200).send(result);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+});
+
 router.get("/:id", auth, async (req, res) => {
   try {
     if (!req.params.id) return;
