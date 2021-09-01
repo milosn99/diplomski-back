@@ -16,6 +16,7 @@ const postSchema = new mongoose.Schema({
   thumbnail: String,
   content: String,
   timeStamp: Date,
+  likes: { type: Array, default: [] },
 });
 
 const Post = mongoose.model("Post", postSchema);

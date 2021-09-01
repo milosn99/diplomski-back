@@ -20,7 +20,7 @@ router.post("/add", auth, async (req, res) => {
   try {
     let project = new Project(req.body.project);
     project.owner = await Student.findById(req.user._id).select("_id name");
-    project.save();
+    await project.save();
 
     const student = await Student.findByIdAndUpdate(
       req.user._id,

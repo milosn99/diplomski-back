@@ -12,22 +12,36 @@ router.post("/", async (req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    let professor = await Recruiter.findOne({
+    let recruiter = await Recruiter.findOne({
       email: req.body.email,
     });
-    if (!professor) return res.status(400).send("Invalid email or password.");
+    if (!recruiter) return res.status(400).send("Invalid email or password.");
 
     const validPassword = await bcrypt.compare(
       req.body.password,
-      professor.password
+      recruiter.password
     );
     if (!validPassword)
       return res.status(400).send("Invalid email or password.");
 
-    const token = professor.generateAuthToken();
+    const token = recruiter.generateAuthToken();
     res.send(token);
   } catch (err) {
     return res.status(500).send(err);
+  }
+});
+
+router.post("/new", auth, async (req, res) => {
+  try {
+    if (req.user.userType !== "admin") return res.status(403).send("Forbidden");
+    let recruiter = req.body.recruiter;
+    recruiter.password = await bcrypt.hash(req.body.recruiter.password, 10);
+    recruiter = new Recruiter(recruiter);
+    recruiter.avatar = `public/avatars/${recruiter._id}.jpg`;
+    recruiter = await recruiter.save();
+    return res.status(200).send(recruiter);
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 

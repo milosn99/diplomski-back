@@ -8,6 +8,7 @@ const express = require("express");
 const router = express.Router();
 const { Project } = require("../models/project");
 const winston = require("winston");
+const multer = require("multer");
 
 router.post("/", async (req, res) => {
   try {
@@ -46,12 +47,29 @@ router.get("/", auth, async (req, res) => {
 
 router.get("/filter", auth, async (req, res) => {
   try {
-    if (req.user.userType !== "recruiter")
+    if (req.user.userType !== "recruiter" && req.user.userType !== "admin")
       return res.status(403).send("Forbidden");
-    const result = await Student.find(req.query);
+    let page = req.query.page;
+    delete req.query.page;
+    const result = await Student.find(req.query)
+      .skip(10 * page)
+      .limit(10);
     if (!result) return res.status(404).send("Students not found");
 
     return res.status(200).send(result);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+});
+
+router.get("/count", auth, async (req, res) => {
+  try {
+    if (req.user.userType !== "recruiter" && req.user.userType !== "admin")
+      return res.status(403).send("Forbidden");
+    delete req.query.page;
+    const count = await Student.countDocuments(req.query);
+
+    return res.send({ count });
   } catch (err) {
     return res.status(500).send(err);
   }
@@ -128,6 +146,38 @@ router.put("/edit", auth, async (req, res) => {
     return res.status(500).send(err);
   }
 });
+
+router.post("/new", auth, async (req, res) => {
+  try {
+    if (req.user.userType !== "admin") return res.status(403).send("Forbidden");
+    let student = req.body.student;
+    student.password = await bcrypt.hash(req.body.student.password, 10);
+    student = new Student(student);
+    student.avatar = `public/avatars/${student._id}.jpg`;
+    student = await student.save();
+    return res.status(200).send(student);
+  } catch (err) {
+    return res.status(400).send(err);
+  }
+});
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./public/avatars");
+  },
+
+  filename: (req, file, cb) => {
+    cb(null, `${req.user._id}.jpg`);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+router.put(
+  "/photo/:id",
+  [auth, upload.single("avatar")],
+  async (req, res) => {}
+);
 
 function validate(req) {
   const schema = {

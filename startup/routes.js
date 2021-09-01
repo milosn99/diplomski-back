@@ -8,6 +8,7 @@ const projects = require("../routes/projects");
 const users = require("../routes/users");
 const messages = require("../routes/messages");
 const conversations = require("../routes/conversations");
+const admins = require("../routes/admins");
 const cors = require("cors");
 const multer = require("multer");
 
@@ -25,4 +26,5 @@ module.exports = function (app) {
   app.use("/api/users", users);
   app.use("/api/messages", messages);
   app.use("/api/conversations", conversations);
+  app.use("/api/admins", admins);
 };

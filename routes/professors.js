@@ -78,7 +78,11 @@ router.put("/projects", auth, async (req, res) => {
         project._id,
         {
           $addToSet: {
-            mentors: _.pick(professor, ["_id", "name"]),
+            mentors: {
+              _id: professor._id,
+              name: professor.name,
+              comment: req.body.comment,
+            },
           },
         },
         {
@@ -92,6 +96,20 @@ router.put("/projects", auth, async (req, res) => {
     res.send(professor);
   } catch (err) {
     return res.status(500).send(err);
+  }
+});
+
+router.post("/new", auth, async (req, res) => {
+  try {
+    if (req.user.userType !== "admin") return res.status(403).send("Forbidden");
+    let professor = req.body.professor;
+    professor.password = await bcrypt.hash(req.body.professor.password, 10);
+    professor = new Professor(professor);
+    professor.avatar = `public/avatars/${professor._id}.jpg`;
+    professor = await professor.save();
+    return res.status(200).send(professor);
+  } catch (err) {
+    return res.status(400).send(err);
   }
 });
 

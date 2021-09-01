@@ -23,9 +23,10 @@ const studentSchema = new mongoose.Schema({
     minlength: 5,
     maxlength: 1024,
   },
-  userType: String,
+  userType: { type: String, default: "student" },
   skills: [String],
   interests: [String],
+  year: { type: Number, required: true, default: 1 },
   projects: [
     new mongoose.Schema({
       _id: {

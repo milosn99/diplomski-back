@@ -35,7 +35,7 @@ const professorSchema = new mongoose.Schema({
     minlength: 5,
     maxlenght: 100,
   },
-  userType: String,
+  userType: { type: String, default: "professor" },
   projects: [
     new mongoose.Schema({
       _id: {
