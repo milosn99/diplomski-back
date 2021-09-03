@@ -113,6 +113,18 @@ router.post("/new", auth, async (req, res) => {
   }
 });
 
+router.get("/count", auth, async (req, res) => {
+  try {
+    if (req.user.userType !== "admin") return res.status(403).send("Forbidden");
+    delete req.query.page;
+    const count = await Professor.countDocuments(req.query);
+
+    return res.send({ count });
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+});
+
 function validate(req) {
   const schema = {
     email: Joi.string().min(5).max(255).required().email(),
