@@ -34,12 +34,15 @@ router.post("/", async (req, res) => {
 });
 
 router.put("/students", auth, async (req, res) => {
+  const session = await Professor.startSession();
+  session.startTransaction();
   try {
     const professor = await Professor.findByIdAndUpdate(
       req.user._id,
       { $addToSet: { students: req.body.student } },
       {
         new: true,
+        session: session,
       }
     ).select("name email students");
 
@@ -52,24 +55,38 @@ router.put("/students", auth, async (req, res) => {
       },
       {
         new: true,
+        session: session,
       }
     );
 
-    if (!professor) return res.status(404).send("Professor not found");
+    if (!professor) {
+      res.status(404).send("Professor not found");
+      await session.abortTransaction();
+      session.endSession();
+      return;
+    }
+
+    await session.commitTransaction();
+    session.endSession();
 
     res.send(professor);
   } catch (err) {
+    await session.abortTransaction();
+    session.endSession();
     return res.status(500).send(err);
   }
 });
 
 router.put("/projects", auth, async (req, res) => {
+  const session = await Professor.startSession();
+  session.startTransaction();
   try {
     const professor = await Professor.findByIdAndUpdate(
       req.user._id,
       { $addToSet: { projects: req.body.project } },
       {
         new: true,
+        session: session,
       }
     ).select("name email projects");
 
@@ -87,14 +104,25 @@ router.put("/projects", auth, async (req, res) => {
         },
         {
           new: true,
+          session: session,
         }
       );
     }
 
-    if (!professor) return res.status(404).send("Professor not found");
+    if (!professor) {
+      res.status(404).send("Professor not found");
+      await session.abortTransaction();
+      session.endSession();
+      return;
+    }
+
+    await session.commitTransaction();
+    session.endSession();
 
     res.send(professor);
   } catch (err) {
+    await session.abortTransaction();
+    session.endSession();
     return res.status(500).send(err);
   }
 });

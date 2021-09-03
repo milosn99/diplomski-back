@@ -17,10 +17,12 @@ router.get("/:id", auth, async (req, res) => {
 });
 
 router.post("/add", auth, async (req, res) => {
+  const session = await Project.startSession();
+  session.startTransaction();
   try {
     let project = new Project(req.body.project);
     project.owner = await Student.findById(req.user._id).select("_id name");
-    await project.save();
+    await project.save({ session });
 
     const student = await Student.findByIdAndUpdate(
       req.user._id,
@@ -31,6 +33,7 @@ router.post("/add", auth, async (req, res) => {
       },
       {
         new: true,
+        session: session,
       }
     ).select("name email projects -_id");
 
@@ -44,15 +47,31 @@ router.post("/add", auth, async (req, res) => {
         },
         {
           new: true,
+          session: session,
         }
       ).select("name email projects -_id");
-      if (!con) return res.status(404).send("Contributor is not a student");
+      if (!con) {
+        res.status(404).send("Contributor is not a student");
+        await session.abortTransaction();
+        session.endSession();
+        return;
+      }
     }
 
-    if (!student) return res.status(404).send("Student not found");
+    if (!student) {
+      res.status(404).send("Student not found");
+      await session.abortTransaction();
+      session.endSession();
+      return;
+    }
+
+    await session.commitTransaction();
+    session.endSession();
 
     res.send(student);
   } catch (err) {
+    await session.abortTransaction();
+    session.endSession();
     return res.status(500).send(err);
   }
 });
