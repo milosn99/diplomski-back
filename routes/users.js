@@ -56,19 +56,13 @@ router.get("/filter", auth, async (req, res) => {
 router.get("/:id", auth, async (req, res) => {
   try {
     if (!req.params.id) return;
-    let student = await Student.findOne({ _id: req.params.id }).select(
-      "_id name userType avatar"
-    );
+    let student = await Student.findOne({ _id: req.params.id });
 
-    let professor = await Professor.findOne({ _id: req.params.id }).select(
-      "_id name userType avatar"
-    );
+    let professor = await Professor.findOne({ _id: req.params.id });
 
-    let recruiter = await Recruiter.findOne({ _id: req.params.id }).select(
-      "_id name userType avatar"
-    );
+    let recruiter = await Recruiter.findOne({ _id: req.params.id });
 
-    const result = student ? student : professor ? professor : recruiter;
+    const result = student ?? professor ?? recruiter;
     if (!result) res.status(400).send("Bad request");
     return res.status(200).send(result);
   } catch (err) {

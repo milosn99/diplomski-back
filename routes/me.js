@@ -56,39 +56,39 @@ router.get("/type", auth, async (req, res) => {
   }
 });
 
-router.put("/hide", auth, async (req, res) => {
-  try {
-    if (req.user.userType == "student") {
-      const student = await Student.findByIdAndUpdate(
-        req.user._id,
-        {
-          $set: { private: true },
-        },
-        { new: true }
-      ).select("-_id userType");
-      return res.status(200).send(student);
-    }
-  } catch (err) {
-    return res.status(500).send(err);
-  }
-});
+// router.put("/hide", auth, async (req, res) => {
+//   try {
+//     if (req.user.userType == "student") {
+//       const student = await Student.findByIdAndUpdate(
+//         req.user._id,
+//         {
+//           $set: { private: true },
+//         },
+//         { new: true }
+//       ).select("-_id userType");
+//       return res.status(200).send(student);
+//     }
+//   } catch (err) {
+//     return res.status(500).send(err);
+//   }
+// });
 
-router.put("/unhide", auth, async (req, res) => {
-  try {
-    if (req.user.userType == "student") {
-      const student = await Student.findByIdAndUpdate(
-        req.user._id,
-        {
-          $set: { private: false },
-        },
-        { new: true }
-      ).select("-_id userType");
-      return res.status(200).send(student);
-    }
-  } catch (err) {
-    return res.status(500).send(err);
-  }
-});
+// router.put("/unhide", auth, async (req, res) => {
+//   try {
+//     if (req.user.userType == "student") {
+//       const student = await Student.findByIdAndUpdate(
+//         req.user._id,
+//         {
+//           $set: { private: false },
+//         },
+//         { new: true }
+//       ).select("-_id userType");
+//       return res.status(200).send(student);
+//     }
+//   } catch (err) {
+//     return res.status(500).send(err);
+//   }
+// });
 
 router.get("/posts", auth, async (req, res) => {
   try {

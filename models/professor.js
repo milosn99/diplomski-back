@@ -26,7 +26,7 @@ const professorSchema = new mongoose.Schema({
   department: {
     type: String,
     required: true,
-    minlength: 5,
+    minlength: 3,
     maxlenght: 100,
   },
   title: {

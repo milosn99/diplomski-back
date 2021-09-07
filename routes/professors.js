@@ -88,26 +88,26 @@ router.put("/projects", auth, async (req, res) => {
         new: true,
         session: session,
       }
-    ).select("name email projects");
+    ).select("name _id email projects");
 
-    for (project of req.body.projects) {
-      await Project.findByIdAndUpdate(
-        project._id,
-        {
-          $addToSet: {
-            mentors: {
-              _id: professor._id,
-              name: professor.name,
-              comment: req.body.comment,
-            },
-          },
+    const mentor = {
+      _id: professor._id,
+      name: professor.name,
+      comment: req.body.comment,
+    };
+
+    await Project.findOneAndUpdate(
+      { _id: req.body.project._id },
+      {
+        $addToSet: {
+          mentors: mentor,
         },
-        {
-          new: true,
-          session: session,
-        }
-      );
-    }
+      },
+      {
+        new: true,
+        session: session,
+      }
+    );
 
     if (!professor) {
       res.status(404).send("Professor not found");

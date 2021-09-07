@@ -2,10 +2,6 @@ const Joi = require("joi");
 const mongoose = require("mongoose");
 
 const subjectSchema = new mongoose.Schema({
-  _id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Subject",
-  },
   name: {
     type: String,
     required: true,
@@ -17,15 +13,10 @@ const subjectSchema = new mongoose.Schema({
     required: true,
     enum: ["theoretical", "practical"],
   },
-  professors: [
-    new mongoose.Schema({
-      _id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Professor",
-      },
-      name: String,
-    }),
-  ],
+  department: {
+    type: String,
+    required: true,
+  },
 });
 
 const Subject = mongoose.model("Subject", subjectSchema);

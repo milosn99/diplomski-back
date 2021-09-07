@@ -47,7 +47,7 @@ router.get("/", auth, async (req, res) => {
 
 router.get("/filter", auth, async (req, res) => {
   try {
-    if (req.user.userType !== "recruiter" && req.user.userType !== "admin")
+    if (req.user.userType === "student")
       return res.status(403).send("Forbidden");
     let page = req.query.page;
     delete req.query.page;
@@ -64,7 +64,7 @@ router.get("/filter", auth, async (req, res) => {
 
 router.get("/count", auth, async (req, res) => {
   try {
-    if (req.user.userType !== "recruiter" && req.user.userType !== "admin")
+    if (req.user.userType === "student")
       return res.status(403).send("Forbidden");
     delete req.query.page;
     const count = await Student.countDocuments(req.query);
@@ -86,39 +86,62 @@ router.get("/:id", auth, async (req, res) => {
   }
 });
 
-router.put("/skills/", auth, async (req, res) => {
+// router.put("/skills/", auth, async (req, res) => {
+//   try {
+//     const student = await Student.findByIdAndUpdate(
+//       req.user._id,
+//       { $set: { skills: req.body.skills } },
+//       {
+//         new: true,
+//       }
+//     ).select("name email skills -_id");
+
+//     if (!student) return res.status(404).send("Student not found");
+
+//     res.send(student);
+//   } catch (err) {
+//     return res.status(500).send(err);
+//   }
+// });
+
+// router.put("/interests/add", auth, async (req, res) => {
+//   try {
+//     const student = await Student.findByIdAndUpdate(
+//       req.user._id,
+//       {
+//         $addToSet: {
+//           interests: {
+//             $each: req.body.interests,
+//           },
+//         },
+//       },
+//       {
+//         new: true,
+//       }
+//     ).select("name email interests -_id");
+
+//     if (!student) return res.status(404).send("Student not found");
+
+//     res.send(student);
+//   } catch (err) {
+//     return res.status(500).send(err);
+//   }
+// });
+
+router.put("/exam/:id", auth, async (req, res) => {
   try {
+    if (req.user.userType !== "admin") return res.status(403).send("Forbidden");
     const student = await Student.findByIdAndUpdate(
-      req.user._id,
-      { $set: { skills: req.body.skills } },
-      {
-        new: true,
-      }
-    ).select("name email skills -_id");
-
-    if (!student) return res.status(404).send("Student not found");
-
-    res.send(student);
-  } catch (err) {
-    return res.status(500).send(err);
-  }
-});
-
-router.put("/interests/add", auth, async (req, res) => {
-  try {
-    const student = await Student.findByIdAndUpdate(
-      req.user._id,
+      req.params.id,
       {
         $addToSet: {
-          interests: {
-            $each: req.body.interests,
-          },
+          exams: req.body.exam,
         },
       },
       {
         new: true,
       }
-    ).select("name email interests -_id");
+    );
 
     if (!student) return res.status(404).send("Student not found");
 

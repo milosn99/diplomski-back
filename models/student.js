@@ -46,11 +46,6 @@ const studentSchema = new mongoose.Schema({
       name: String,
     }),
   ],
-  averageGrade: {
-    type: Number,
-    min: 6.0,
-    max: 10.0,
-  },
   exams: [
     new mongoose.Schema({
       subject: {
@@ -73,37 +68,24 @@ const studentSchema = new mongoose.Schema({
       descrtiption: String,
     }),
   ],
-  experience: [
-    new mongoose.Schema({
-      position: String,
-      company: {
-        type: new mongoose.Schema({
-          _id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Company",
-          },
-          name: String,
-          location: String,
-        }),
-      },
-      dateStarted: Date,
-      dateEnded: Date,
-    }),
-  ],
   studyProgram: {
-    type: new mongoose.Schema({
-      _id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "StudyProgram",
-      },
-      name: String,
-    }),
+    type: String,
+    required: true,
+    enum: [
+      "Informacioni sistemi i tehnologije",
+      "Menadzment i organizacija",
+      "Operacioni menadzment",
+      "Menadzment kvaliteta i standardizacija",
+    ],
   },
   avatar: String,
   headline: String,
-  private: {
-    type: Boolean,
-    default: false,
+  indexNumber: {
+    type: String,
+    required: true,
+    minlength: 9,
+    maxlength: 9,
+    unique: true,
   },
 });
 

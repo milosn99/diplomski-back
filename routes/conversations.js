@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const auth = require("../middleware/auth");
-const Conversation = require("../models/Conversation");
+const { Conversation } = require("../models/conversation");
 
 router.post("/", auth, async (req, res) => {
   if (!req.body.receiverId) return res.status(400).send("Bad request");
